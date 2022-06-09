@@ -16,7 +16,7 @@ services:
       - ./:/var/www
       - ./Docker/php/php.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
-      - hillel_test_2_usedsings
+      - hillel_test_2_usedsings_2
 
   #Nginx Service
   webserver:
@@ -30,7 +30,7 @@ services:
       - ./:/var/www
       - ./Docker/nginx/:/etc/nginx/conf.d/
     networks:
-      - hillel_test_2_usedsings
+      - hillel_test_2_usedsings_2
 
   #MySQL Service
   db:
@@ -52,7 +52,7 @@ services:
       - ./Docker/mysql/my.cnf:/etc/mysql/my.cnf
     command: "--default-authentication-plugin=mysql_native_password"
     networks:
-      - hillel_test_2_usedsings
+      - hillel_test_2_usedsings_2
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -63,8 +63,8 @@ services:
     ports:
       - 7760:80
     networks:
-      - hillel_test_2_usedsings
+      - hillel_test_2_usedsings_2
 
 networks:
-  hillel_test_2_usedsings:
+  hillel_test_2_usedsings_2:
     driver: bridge
