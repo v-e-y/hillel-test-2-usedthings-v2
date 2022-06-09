@@ -26,12 +26,28 @@ class AuthController extends Controller
         if ($user = User::query()->where('username', $request->username)->first()) {
             if (! Hash::check($request->password, $user->password)) {
                 return back()->withErrors([
-                    'password' => 'The provided credentials do not match our records.',
+                    'password' => 'The provided password do not match our records.',
                 ])->onlyInput('password');
             }
             Auth::login($user, true);
             return back();
         }
+
+
+        if (
+            $user = User::create([
+                'username' => $request->username,
+                'password' => Hash::make($request->password)
+            ])
+        ) {
+            Auth::login($user, true);
+            return back(201);
+        }
+        
+        /*
+        Auth::login($user, true);
+
+        dd($user, Auth::user());
 
         if (
             Auth::login(User::create([
@@ -39,11 +55,14 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password)
             ]), true)
         ) {
+            dd('hi');
             return back(201);
+        } else {
+            dd('hi else');
         }
-
+*/
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'test The provided credentials do not match our records.',
         ])->onlyInput('email');
     }
 }
