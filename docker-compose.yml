@@ -1,0 +1,70 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Docker/Dockerfile
+    image: php:8.0.18-fpm
+    container_name: hillel_test_2_usedsings_php
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./Docker/php/php.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - hillel_test_2_usedsings
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: hillel_test_2_usedsings_nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "7777:80"
+    volumes:
+      - ./:/var/www
+      - ./Docker/nginx/:/etc/nginx/conf.d/
+    networks:
+      - hillel_test_2_usedsings
+
+  #MySQL Service
+  db:
+    image: mysql:5.7.24
+    container_name: hillel_test_2_usedsings_mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "7776:3306"
+    environment:
+      MYSQL_DATABASE: hillel_test_2_usedsings_laravel
+      MYSQL_USER: hillel_test_2_usedsings_laravel
+      MYSQL_PASSWORD: hillel_test_2_usedsings_laravel
+      MYSQL_ROOT_PASSWORD: hillel_test_2_usedsings_laravel
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./Docker/mysql/data:/var/lib/mysql/
+      - ./Docker/mysql/my.cnf:/etc/mysql/my.cnf
+    command: "--default-authentication-plugin=mysql_native_password"
+    networks:
+      - hillel_test_2_usedsings
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: hillel_test_2_usedsings_phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - 7760:80
+    networks:
+      - hillel_test_2_usedsings
+
+networks:
+  hillel_test_2_usedsings:
+    driver: bridge
