@@ -33,7 +33,6 @@ class AuthController extends Controller
             return back();
         }
 
-
         if (
             $user = User::create([
                 'username' => $request->username,
@@ -44,23 +43,6 @@ class AuthController extends Controller
             return back(201);
         }
         
-        /*
-        Auth::login($user, true);
-
-        dd($user, Auth::user());
-
-        if (
-            Auth::login(User::create([
-                'username' => $request->username,
-                'password' => Hash::make($request->password)
-            ]), true)
-        ) {
-            dd('hi');
-            return back(201);
-        } else {
-            dd('hi else');
-        }
-*/
         return back()->withErrors([
             'email' => 'test The provided credentials do not match our records.',
         ])->onlyInput('email');
